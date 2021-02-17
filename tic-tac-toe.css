@@ -1,0 +1,31 @@
+.sqare {
+  background-color: #03899c;
+  width: 200px;
+  height: 200px;
+  border: solid 1px black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 75px;
+  color: red;
+}
+
+#board {
+  width: 606px;
+  height: 606px;
+  display: flex;
+  flex-wrap: wrap;
+  border: solid 1px black;
+}
+
+.text-color {
+  color: red;
+}
+
+button {
+  width: 300px;
+  height: 100px;
+  font-size: 30px;
+  background-color: skyblue;
+  margin: 1px;
+}
