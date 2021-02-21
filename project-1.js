@@ -37,31 +37,66 @@ loginForm.innerHTML =
   <input type="email" id="email" class="form-field" name="email" value=""><br> \
   <label for="password">Password:</label><br> \
   <input type="password" id="password" class="form-field" name="password" value=""><br><br>  \
-  <input type="submit" id="login" value="Login">';
+  <input type="submit" id="login" class="button" value="Login">';
 
 // CREATE NEW LIST
 createListForm.innerHTML =
-  '<label for="ListName">Name new list</label><br> \
+  '<label for="ListName">List Name</label><br> \
   <input type="text" id="newList" class="form-field" name="ListName" value=""><br> \
   <input type="submit" id="apply" class="list-button" value="Create"> \
   <input type="submit" id="cancel" class="list-button" value="Cancel">';
 
 // DASHBOARD
-function displayDashboard() {
+function displayDashboard(userObj) {
   dashboard.appendChild(createListButton);
   if (removeChilds(pageContent)) {
     pageContent.classList.remove("content-submit");
-    dashboard.appendChild(createListButton);
     pageContent.appendChild(dashboard);
   }
+  // FUNCTION ADD NEW TO DO
+  function addToDo(userObj, toDoName) {
+    //console.log(userObj.toDo);
+    console.log("here");
+    if (
+      Object.keys(userObj.toDo).length !== 0 &&
+      userObj.toDo.constructor === Object
+    ) {
+      for (let key in userObj.toDo) {
+        if (key === toDoName) {
+          console.log("ToDo name Already exixst");
+        } else {
+          userObj.toDo[toDoName] = {};
+          localStorage.removeItem(userObj.firstName);
+          localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+          return true;
+        }
+        return false;
+      }
+    } else {
+      userObj.toDo[toDoName] = {};
+      localStorage.removeItem(userObj.firstName);
+      localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+      return true;
+    }
+  }
+  function displayListOfTasks(userObj) {
+    console.log(userObj);
+    userObj.toDo.forEach(element => {
+      console.log(element);
+    });
+  }
+
   createListButton.addEventListener("click", e => {
     e.preventDefault();
     dashboard.appendChild(createListForm);
     const applyCreationList = document.getElementById("apply");
     const cancelCreationList = document.getElementById("cancel");
+    const listName = document.getElementById("newList");
     // APLAY BUTTON
     applyCreationList.addEventListener("click", e => {
       e.preventDefault();
+      //console.log(userObj, listName.value);
+      addToDo(userObj, listName.value);
     });
     // CANCEL BUTTON
     cancelCreationList.addEventListener("click", e => {
@@ -102,12 +137,11 @@ function insertUserDataToLocalStorage(firstName, lastName, email, password) {
       lastName: lastName,
       email: email,
       password: password,
-      toDo: []
+      toDo: {}
     };
     localStorage.setItem(firstName, JSON.stringify(userData));
-    return true;
+    return JSON.parse(localStorage.getItem(firstName, userData));
   } else {
-    console.log("here");
     return false;
   }
 }
@@ -153,7 +187,7 @@ signUpButton.addEventListener("click", () => {
       );
       // IF DATA IS INSERTED
       if (userIsInserted) {
-        displayDashboard();
+        displayDashboard(userIsInserted);
         createListButton.addEventListener("click", e => {
           e.preventDefault();
         });
@@ -195,7 +229,7 @@ loginButton.addEventListener("click", () => {
     } else {
       let emailExists = CheckIfDataExistsInLS(emailInput.value, "userEmail");
       if (emailExists && passwordInput.value === emailExists.password) {
-        displayDashboard();
+        displayDashboard(emailExists);
       } else {
         loginForm.appendChild(validationMessage);
         setTimeout(() => {
