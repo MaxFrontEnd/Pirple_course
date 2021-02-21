@@ -1,10 +1,13 @@
 let signUpform = document.createElement("form");
 let loginForm = document.createElement("form");
 let createListForm = document.createElement("form");
+let createTaskForm = document.createElement("form");
 let dashboard = document.createElement("div");
 let pageContent = document.getElementById("content");
 const signUpButton = document.getElementById("signUpButton");
 const loginButton = document.getElementById("LogInButton");
+const ulOfTodos = document.createElement("ul");
+const ulOfTasks = document.createElement("ul");
 
 const createListButton = document.createElement("button");
 //let helloUser = document.createElement("p");
@@ -16,6 +19,7 @@ dashboard.setAttribute("class", "dashboard");
 createListButton.setAttribute("id", "createListButton");
 createListButton.innerHTML = "Create new TODO List";
 createListButton.setAttribute("class", "button");
+ulOfTodos.setAttribute("id", "ulToDo");
 //helloUser.setAttribute("class", "hello");
 
 // SIGN UP FORM
@@ -41,10 +45,17 @@ loginForm.innerHTML =
 
 // CREATE NEW LIST
 createListForm.innerHTML =
-  '<label for="ListName">List Name</label><br> \
+  '<label for="ListName">List Name:</label><br> \
   <input type="text" id="newList" class="form-field" name="ListName" value=""><br> \
   <input type="submit" id="apply" class="list-button" value="Create"> \
   <input type="submit" id="cancel" class="list-button" value="Cancel">';
+
+//CREATE TASK FORM
+
+createTaskForm.innerHTML =
+  '<label for="TaskName">Task name:</label><br> \
+    <input type="text" id="newTask" class="form-field" name="TaskName" value=""><br> \
+    <input type="submit" id="addTask" class="list-button" value="Add"> ';
 
 // DASHBOARD
 function displayDashboard(userObj) {
@@ -53,39 +64,132 @@ function displayDashboard(userObj) {
     pageContent.classList.remove("content-submit");
     pageContent.appendChild(dashboard);
   }
-  // FUNCTION ADD NEW TO DO
-  function addToDo(userObj, toDoName) {
-    //console.log(userObj.toDo);
-    console.log("here");
-    if (
-      Object.keys(userObj.toDo).length !== 0 &&
-      userObj.toDo.constructor === Object
-    ) {
-      for (let key in userObj.toDo) {
-        if (key === toDoName) {
-          console.log("ToDo name Already exixst");
-        } else {
-          userObj.toDo[toDoName] = {};
-          localStorage.removeItem(userObj.firstName);
-          localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
-          return true;
-        }
-        return false;
+  addCreateToDoListForm(userObj);
+  displayListOfToDos(userObj);
+}
+
+// DISPLAY TODOS FUNCTIONALITY
+function displayListOfToDos(userObj) {
+  while (ulOfTodos.firstChild) {
+    ulOfTodos.removeChild(ulOfTodos.firstChild);
+  }
+  for (let key in userObj.toDo) {
+    let li = document.createElement("li");
+    li.innerHTML = "<a href='' id=" + key + ">" + key + "</a>";
+    ulOfTodos.appendChild(li);
+  }
+
+  //Bubling
+
+  ulOfTodos.addEventListener("click", e => {
+    e.preventDefault();
+    for (let key in userObj.toDo) {
+      if (key === e.target.outerText) {
+        displayListOfTasks(userObj, userObj.toDo[key], key);
       }
+    }
+  });
+
+  pageContent.appendChild(ulOfTodos);
+}
+
+// DISPLAY TASKS
+function displayListOfTasks(userObj, toDoObj, key) {
+  if (removeChilds(pageContent)) {
+    pageContent.classList.remove("content-submit");
+    pageContent.appendChild(createTaskForm);
+  }
+  let addTaskButton = document.getElementById("addTask");
+  let taskName = document.getElementById("newTask");
+  addTaskButton.addEventListener("click", e => {
+    e.preventDefault();
+    if (!taskName.value) {
+      console.log("eter a taskName");
     } else {
-      userObj.toDo[toDoName] = {};
+      addTask(userObj, toDoObj, taskName.value, key);
+    }
+  });
+
+  //   while (ulOfTasks.firstChild) {
+  //     ulOfTasks.removeChild(ulOfTasks.firstChild);
+  //   }
+
+  //   for (let key in userObj.toDo) {
+  //     let li = document.createElement("li");
+  //     li.innerHTML = "<a href='' id=" + key + ">" + key + "</a>";
+  //     ulOfTodos.appendChild(li);
+  //   }
+}
+
+// ADD NEW TASK TO THE OBJECT
+function addTask(userObj, toDoObj, taskName, key) {
+  if (Object.keys(toDoObj).length === 0 && toDoObj.constructor === Object) {
+    console.log(key);
+    userObj.toDo[key][taskName] = false;
+    localStorage.removeItem(userObj.firstName);
+    localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+    return true;
+  }
+  for (let task in toDoObj) {
+    if (task === taskName) {
+      console.log("task already exist");
+    } else {
+      userObj.toDo[key][taskName] = false;
+      console.log(userObj);
       localStorage.removeItem(userObj.firstName);
       localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
       return true;
     }
   }
-  function displayListOfTasks(userObj) {
-    console.log(userObj);
-    userObj.toDo.forEach(element => {
-      console.log(element);
-    });
+  //
+  //     console.log("here");
+  //     for (let key in userObj.toDo) {
+  //       if (key === toDoName) {
+  //         console.log("ToDo name Already exixst");
+  //       } else {
+  //         userObj.toDo[toDoName] = {};
+  //         localStorage.removeItem(userObj.firstName);
+  //         localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+  //         return true;
+  //       }
+  //       return false;
+  //     }
+  //   } else {
+  //     userObj.toDo[toDoName] = {};
+  //     localStorage.removeItem(userObj.firstName);
+  //     localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+  //     return true;
+  //   }
+}
+// ADD NEW TO DO TO THE OBJECT
+function addToDo(userObj, toDoName) {
+  //console.log(userObj.toDo);
+  //console.log("here");
+  if (
+    Object.keys(userObj.toDo).length !== 0 &&
+    userObj.toDo.constructor === Object
+  ) {
+    console.log("here");
+    for (let key in userObj.toDo) {
+      if (key === toDoName) {
+        console.log("ToDo name Already exixst");
+      } else {
+        userObj.toDo[toDoName] = {};
+        localStorage.removeItem(userObj.firstName);
+        localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+        return true;
+      }
+      return false;
+    }
+  } else {
+    userObj.toDo[toDoName] = {};
+    localStorage.removeItem(userObj.firstName);
+    localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+    return true;
   }
-
+}
+// ADD CREATE LIST FORM ON PAGE
+function addCreateToDoListForm(userObj) {
   createListButton.addEventListener("click", e => {
     e.preventDefault();
     dashboard.appendChild(createListForm);
@@ -97,6 +201,8 @@ function displayDashboard(userObj) {
       e.preventDefault();
       //console.log(userObj, listName.value);
       addToDo(userObj, listName.value);
+      //removeListOfTask();
+      displayListOfToDos(userObj);
     });
     // CANCEL BUTTON
     cancelCreationList.addEventListener("click", e => {
