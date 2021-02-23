@@ -7,7 +7,9 @@ let pageContent = document.getElementById("content");
 const signUpButton = document.getElementById("signUpButton");
 const loginButton = document.getElementById("LogInButton");
 const ulOfTodos = document.createElement("ul");
-const ulOfTasks = document.createElement("ul");
+const taskDiv = document.createElement("div");
+const returnOnToDo = document.createElement("button");
+const saveButton = document.createElement("button");
 
 const createListButton = document.createElement("button");
 //let helloUser = document.createElement("p");
@@ -20,12 +22,18 @@ createListButton.setAttribute("id", "createListButton");
 createListButton.innerHTML = "Create new TODO List";
 createListButton.setAttribute("class", "button");
 ulOfTodos.setAttribute("id", "ulToDo");
+taskDiv.setAttribute("id", "taskDiv");
+returnOnToDo.setAttribute("id", "returnOnToDo");
+returnOnToDo.setAttribute("class", "button");
+returnOnToDo.innerHTML = "Return to list";
+saveButton.setAttribute("class", "button");
+saveButton.innerHTML = "Save";
 //helloUser.setAttribute("class", "hello");
 
 // SIGN UP FORM
 signUpform.innerHTML =
   '<label for="fname">First name:</label><br> \
-  <input type="text" id="fname" class="form-field" name="fname" value=""><br> \
+  <input type="text" id="fname" class="form-field" maxlength="30" name="fname" value=""><br> \
   <label for="lname">Last name:</label><br> \
   <input type="text" id="lname" class="form-field" name="lname" value=""><br> \
   <label for="email">Email:</label><br> \
@@ -46,7 +54,7 @@ loginForm.innerHTML =
 // CREATE NEW LIST
 createListForm.innerHTML =
   '<label for="ListName">List Name:</label><br> \
-  <input type="text" id="newList" class="form-field" name="ListName" value=""><br> \
+  <input type="text" id="newList" class="form-field"  maxlength="30" name="ListName" value=""><br> \
   <input type="submit" id="apply" class="list-button" value="Create"> \
   <input type="submit" id="cancel" class="list-button" value="Cancel">';
 
@@ -54,7 +62,7 @@ createListForm.innerHTML =
 
 createTaskForm.innerHTML =
   '<label for="TaskName">Task name:</label><br> \
-    <input type="text" id="newTask" class="form-field" name="TaskName" value=""><br> \
+    <input type="text" id="newTask" class="form-field" maxlength="30" name="TaskName" value=""><br> \
     <input type="submit" id="addTask" class="list-button" value="Add"> ';
 
 // DASHBOARD
@@ -68,99 +76,6 @@ function displayDashboard(userObj) {
   displayListOfToDos(userObj);
 }
 
-// DISPLAY TODOS FUNCTIONALITY
-function displayListOfToDos(userObj) {
-  while (ulOfTodos.firstChild) {
-    ulOfTodos.removeChild(ulOfTodos.firstChild);
-  }
-  for (let key in userObj.toDo) {
-    let li = document.createElement("li");
-    li.innerHTML = "<a href='' id=" + key + ">" + key + "</a>";
-    ulOfTodos.appendChild(li);
-  }
-
-  //Bubling
-
-  ulOfTodos.addEventListener("click", e => {
-    e.preventDefault();
-    for (let key in userObj.toDo) {
-      if (key === e.target.outerText) {
-        displayListOfTasks(userObj, userObj.toDo[key], key);
-      }
-    }
-  });
-
-  pageContent.appendChild(ulOfTodos);
-}
-
-// DISPLAY TASKS
-function displayListOfTasks(userObj, toDoObj, key) {
-  if (removeChilds(pageContent)) {
-    pageContent.classList.remove("content-submit");
-    pageContent.appendChild(createTaskForm);
-  }
-  let addTaskButton = document.getElementById("addTask");
-  let taskName = document.getElementById("newTask");
-  addTaskButton.addEventListener("click", e => {
-    e.preventDefault();
-    if (!taskName.value) {
-      console.log("eter a taskName");
-    } else {
-      addTask(userObj, toDoObj, taskName.value, key);
-    }
-  });
-
-  //   while (ulOfTasks.firstChild) {
-  //     ulOfTasks.removeChild(ulOfTasks.firstChild);
-  //   }
-
-  //   for (let key in userObj.toDo) {
-  //     let li = document.createElement("li");
-  //     li.innerHTML = "<a href='' id=" + key + ">" + key + "</a>";
-  //     ulOfTodos.appendChild(li);
-  //   }
-}
-
-// ADD NEW TASK TO THE OBJECT
-function addTask(userObj, toDoObj, taskName, key) {
-  if (Object.keys(toDoObj).length === 0 && toDoObj.constructor === Object) {
-    console.log(key);
-    userObj.toDo[key][taskName] = false;
-    localStorage.removeItem(userObj.firstName);
-    localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
-    return true;
-  }
-  for (let task in toDoObj) {
-    if (task === taskName) {
-      console.log("task already exist");
-    } else {
-      userObj.toDo[key][taskName] = false;
-      console.log(userObj);
-      localStorage.removeItem(userObj.firstName);
-      localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
-      return true;
-    }
-  }
-  //
-  //     console.log("here");
-  //     for (let key in userObj.toDo) {
-  //       if (key === toDoName) {
-  //         console.log("ToDo name Already exixst");
-  //       } else {
-  //         userObj.toDo[toDoName] = {};
-  //         localStorage.removeItem(userObj.firstName);
-  //         localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
-  //         return true;
-  //       }
-  //       return false;
-  //     }
-  //   } else {
-  //     userObj.toDo[toDoName] = {};
-  //     localStorage.removeItem(userObj.firstName);
-  //     localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
-  //     return true;
-  //   }
-}
 // ADD NEW TO DO TO THE OBJECT
 function addToDo(userObj, toDoName) {
   //console.log(userObj.toDo);
@@ -169,7 +84,6 @@ function addToDo(userObj, toDoName) {
     Object.keys(userObj.toDo).length !== 0 &&
     userObj.toDo.constructor === Object
   ) {
-    console.log("here");
     for (let key in userObj.toDo) {
       if (key === toDoName) {
         console.log("ToDo name Already exixst");
@@ -188,6 +102,179 @@ function addToDo(userObj, toDoName) {
     return true;
   }
 }
+
+// DISPLAY TODOS FUNCTIONALITY
+function displayListOfToDos(userObj) {
+  while (ulOfTodos.firstChild) {
+    ulOfTodos.removeChild(ulOfTodos.firstChild);
+  }
+  //console.log(userObj);
+  for (let key in userObj.toDo) {
+    let li = document.createElement("li");
+    li.setAttribute("class", "toDoLi");
+    li.innerHTML = "<a href='' id=" + key + ">" + key + "</a>";
+    ulOfTodos.appendChild(li);
+  }
+
+  //Bubling
+
+  ulOfTodos.addEventListener("click", e => {
+    e.preventDefault();
+    for (let key in userObj.toDo) {
+      if (key === e.target.outerText) {
+        displayAddTaskForm(userObj, userObj.toDo[key], key);
+        displayListOfTasks(userObj.toDo[key], userObj, key);
+      }
+    }
+  });
+
+  pageContent.appendChild(ulOfTodos);
+}
+
+// DISPLAY ADD TASK FORM
+function displayAddTaskForm(userObj, toDoObj, key) {
+  pageContent.appendChild(createTaskForm);
+  let addTaskButton = document.getElementById("addTask");
+  let taskName = document.getElementById("newTask");
+  addTaskButton.addEventListener("click", e => {
+    e.preventDefault();
+    if (!taskName.value) {
+      console.log("eter a taskName");
+    } else {
+      addTask(userObj, toDoObj, taskName.value, key);
+    }
+  });
+}
+
+// DISPLAY TASKS
+function displayListOfTasks(toDoObj, userObj, key) {
+  removeChilds(taskDiv);
+  for (let task in toDoObj) {
+    let liDiv = document.createElement("div");
+    liDiv.setAttribute("class", "liDiv");
+    let taskSpan = document.createElement("span");
+    taskSpan.setAttribute("class", "taskLi");
+
+    let cheked = document.createElement("span");
+    cheked.classList.add("done", "cheked");
+    if (toDoObj[task] === false) {
+      cheked.innerHTML = "X";
+      cheked.classList.add("done");
+    } else {
+      cheked.innerHTML = "V";
+      cheked.classList.remove("done");
+    }
+
+    //BuBLING
+    taskSpan.innerHTML = task;
+    liDiv.appendChild(taskSpan);
+    liDiv.appendChild(cheked);
+    taskDiv.appendChild(liDiv);
+    liDiv.addEventListener("click", e => {
+      e.preventDefault();
+      //   console.log(e.target.firstChild.innerText);
+      //   console.log(e.target.innerText);
+      //   console.log(task);
+      if (
+        e.target.innerText === task &&
+        e.target.nextSibling.innerText === "X"
+      ) {
+        userObj.toDo[key][task] = true;
+        cheked.innerHTML = "V";
+        cheked.classList.toggle("done");
+      } else if (
+        e.target.firstChild.innerText === task &&
+        e.target.firstChild.nextSibling.innerText === "X"
+      ) {
+        userObj.toDo[key][task] = true;
+        cheked.innerHTML = "V";
+        cheked.classList.toggle("done");
+      } else if (
+        e.target.innerText === task &&
+        e.target.nextSibling.innerText === "V"
+      ) {
+        userObj.toDo[key][task] = false;
+        cheked.innerHTML = "X";
+        cheked.classList.toggle("done");
+      } else if (
+        e.target.firstChild.innerText === task &&
+        e.target.firstChild.nextSibling.innerText === "V"
+      ) {
+        userObj.toDo[key][task] = false;
+        cheked.innerHTML = "X";
+        cheked.classList.toggle("done");
+      }
+    });
+  }
+
+  if (removeChilds(pageContent)) {
+    pageContent.classList.remove("content-submit");
+    pageContent.appendChild(createTaskForm);
+    pageContent.appendChild(taskDiv);
+    pageContent.appendChild(returnOnToDo);
+    pageContent.appendChild(saveButton);
+  }
+
+  saveButton.addEventListener("click", e => {
+    e.preventDefault();
+    console.log(userObj);
+    saveObject(userObj);
+  });
+
+  returnOnToDo.addEventListener("click", e => {
+    e.preventDefault();
+    displayDashboard(userObj);
+  });
+
+  //   pageContent.removeChild(ulOfTodos);
+  //   pageContent.appendChild(ulOfTasks);
+
+  //   while (ulOfTasks.firstChild) {
+  //     ulOfTasks.removeChild(ulOfTasks.firstChild);
+  //   }
+
+  //   for (let key in userObj.toDo) {
+  //     let li = document.createElement("li");
+  //     li.innerHTML = "<a href='' id=" + key + ">" + key + "</a>";
+  //     ulOfTodos.appendChild(li);
+  //   }
+}
+
+// SAVE OBJECT
+function saveObject(userObj) {
+  if (userObj) {
+    localStorage.removeItem(userObj.firstName);
+    localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+    displayDashboard(userObj);
+  }
+}
+
+// ADD NEW TASK TO THE OBJECT
+function addTask(userObj, toDoObj, taskName, key) {
+  console.log(toDoObj);
+  if (Object.keys(toDoObj).length === 0 && toDoObj.constructor === Object) {
+    console.log("EMPTY OBJECt");
+    userObj.toDo[key][taskName] = false;
+    localStorage.removeItem(userObj.firstName);
+    localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+    displayListOfTasks(toDoObj, userObj, key);
+    return;
+  }
+  for (let task in toDoObj) {
+    console.log(task);
+    if (task === taskName) {
+      console.log("task " + task + " already exist. Yot enter " + taskName);
+      return false;
+    }
+  }
+  userObj.toDo[key][taskName] = false;
+  localStorage.removeItem(userObj.firstName);
+  localStorage.setItem(userObj.firstName, JSON.stringify(userObj));
+  console.log(key);
+  displayListOfTasks(toDoObj, userObj, key);
+  return true;
+}
+
 // ADD CREATE LIST FORM ON PAGE
 function addCreateToDoListForm(userObj) {
   createListButton.addEventListener("click", e => {
@@ -199,9 +286,7 @@ function addCreateToDoListForm(userObj) {
     // APLAY BUTTON
     applyCreationList.addEventListener("click", e => {
       e.preventDefault();
-      //console.log(userObj, listName.value);
       addToDo(userObj, listName.value);
-      //removeListOfTask();
       displayListOfToDos(userObj);
     });
     // CANCEL BUTTON
