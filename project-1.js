@@ -1,3 +1,4 @@
+displayStartPage();
 let signUpform = document.createElement("form");
 let loginForm = document.createElement("form");
 let createListForm = document.createElement("form");
@@ -10,6 +11,7 @@ const ulOfTodos = document.createElement("ul");
 const taskDiv = document.createElement("div");
 const returnOnToDo = document.createElement("button");
 const saveButton = document.createElement("button");
+const header = document.querySelector(".header");
 
 const createListButton = document.createElement("button");
 //let helloUser = document.createElement("p");
@@ -30,6 +32,33 @@ saveButton.setAttribute("class", "button");
 saveButton.innerHTML = "Save";
 //helloUser.setAttribute("class", "hello");
 
+//START PAGE
+
+function displayStartPage() {
+  let startPage =
+    '<header>\
+    <div id="headContainer" class="head-container">\
+        <h1 class="header">TO DO LIST</h1>\
+        <span id="userLogin" class="header-info">You are not logged in</span>\
+        <span id="settings" class="header-info">Settings</span>\
+        <span id="logOff" class="header-info">LogOff</span>\
+    </div>\
+</header>\
+<div id="wrap">\
+    <div id="content">\
+    <h2 class="discription">Check what you do <span class="simbol">&#x2714</span></h2>\
+    <button id="signUpButton" class="button" name="singUp">Sign Up</button>\
+    <button id="LogInButton" class="button" name="Login">Log In</button>\
+    </div>\
+</div>';
+  body.innerHTML = startPage;
+
+  let logOff = document.getElementById("logOff");
+  logOff.addEventListener("click", e => {
+    e.preventDefault();
+    logOffUser();
+  });
+}
 // SIGN UP FORM
 signUpform.innerHTML =
   '<label for="fname">First name:</label><br> \
@@ -420,6 +449,7 @@ loginButton.addEventListener("click", () => {
     } else {
       let emailExists = CheckIfDataExistsInLS(emailInput.value, "userEmail");
       if (emailExists && passwordInput.value === emailExists.password) {
+        displayData(emailExists);
         displayDashboard(emailExists);
       } else {
         loginForm.appendChild(validationMessage);
@@ -430,3 +460,14 @@ loginButton.addEventListener("click", () => {
     }
   });
 });
+
+function displayData(userObj) {
+  let loginInfo = document.getElementById("userLogin");
+  loginInfo.innerText = userObj.firstName;
+}
+
+function logOffUser() {
+  let loginInfo = document.getElementById("userLogin");
+  loginInfo.innerText = "You are not logged in";
+  displayStartPage();
+}
