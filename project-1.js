@@ -3,8 +3,8 @@ let signUpform = document.createElement("form");
 let loginForm = document.createElement("form");
 let createListForm = document.createElement("form");
 let createTaskForm = document.createElement("form");
+let editForm = document.createElement("form");
 let dashboard = document.createElement("div");
-
 const ulOfTodos = document.createElement("ul");
 const taskDiv = document.createElement("div");
 const returnOnToDo = document.createElement("button");
@@ -16,6 +16,7 @@ const createListButton = document.createElement("button");
 
 signUpform.setAttribute("id", "signUpForm");
 loginForm.setAttribute("id", "loginForm");
+editForm.setAttribute("id", "edit-form");
 dashboard.setAttribute("id", "dashboard");
 dashboard.setAttribute("class", "dashboard");
 createListButton.setAttribute("id", "createListButton");
@@ -43,7 +44,7 @@ function displayStartPage() {
         <h1 class="header">TO DO LIST</h1>\
         <span id="userLogin" class="header-info">You are not logged in</span>\
         <span id="settings" class="header-info">Settings</span>\
-        <span id="logOff" class="header-info">LogOff</span>\
+        <span id="logOff" class="header-info">Log Off</span>\
     </div>\
 </header>\
 <div id="wrap">\
@@ -83,6 +84,19 @@ function displayStartPage() {
 }
 
 console.log(content);
+
+//EDIT FORM
+editForm.innerHTML =
+  '<label for="fname">First name:</label><br> \
+<input type="text" id="fname" class="form-field" maxlength="30" name="fname" value=""><br> \
+<label for="lname">Last name:</label><br> \
+<input type="text" id="lname" class="form-field" name="lname" value=""><br> \
+<label for="email">Email:</label><br> \
+<input type="email" id="email" class="form-field" name="email" value=""><br> \
+<label for="password">Password:</label><br> \
+<input type="password" id="password" class="form-field" name="password" value=""><br><br>  \
+<input type="submit" id="edit" class="button" value="Edit"> <br> \
+<input type="submit" id="cancelEdit" class="button" value="Cancel">';
 // SIGN UP FORM
 signUpform.innerHTML =
   '<label for="fname">First name:</label><br> \
@@ -94,7 +108,7 @@ signUpform.innerHTML =
   <label for="password">Password:</label><br> \
   <input type="password" id="password" class="form-field" name="password" value=""><br><br>  \
   <input type="checkbox" id="checkbox" name="checkbox">I agree to the Terms of Use" <br><br> \
-  <input type="submit" id="submit" value="Submit">';
+  <input type="submit" id="submit" class="button" value="Submit">';
 
 //LOGIN FORM
 loginForm.innerHTML =
@@ -102,7 +116,7 @@ loginForm.innerHTML =
   <input type="email" id="email" class="form-field" name="email" value=""><br> \
   <label for="password">Password:</label><br> \
   <input type="password" id="password" class="form-field" name="password" value=""><br><br>  \
-  <input type="submit" id="login" class="button" value="Login">';
+  <input type="submit" id="login" class="button" value="Log In">';
 
 // CREATE NEW LIST
 createListForm.innerHTML =
@@ -487,6 +501,11 @@ function logIn(e) {
     if (emailExists && passwordInput.value === emailExists.password) {
       displayData(emailExists);
       displayDashboard(emailExists);
+      let settings = document.getElementById("settings");
+      settings.addEventListener("click", e => {
+        e.preventDefault();
+        editUser(emailExists);
+      });
     } else {
       loginForm.appendChild(validationMessage);
       setTimeout(() => {
@@ -495,6 +514,8 @@ function logIn(e) {
     }
   }
 }
+
+// Listen login button
 function loginInputListener() {
   const loginInput = document.getElementById("login");
   const emailInput = document.getElementById("email");
@@ -503,3 +524,36 @@ function loginInputListener() {
   passwordInput.value = "";
   loginInput.addEventListener("click", logIn);
 }
+
+function editUser(userObj) {
+  if (!userObj) {
+    alert("You are not login in");
+  } else {
+    removeChilds(content);
+    console.log(editForm);
+    content.appendChild(editForm);
+    const fnInput = document.getElementById("fname");
+    const lnInput = document.getElementById("lname");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const editButton = document.getElementById("edit");
+    const cancelButton = document.getElementById("cancelEdit");
+    fnInput.value = userObj.firstName;
+    lnInput.value = userObj.lastName;
+    emailInput.value = userObj.email;
+    passwordInput.value = userObj.password;
+
+    cancelEdit.addEventListener("click", e => {
+      e.preventDefault();
+      displayDashboard(userObj);
+    });
+    editButton.addEventListener("click", e => {});
+  }
+}
+
+// function editListener(e) {
+//     const editButton = document.getElementById("edit");
+//     editButton.addEventListener('click', e => {
+
+//     })
+// }

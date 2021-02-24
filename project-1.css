@@ -78,7 +78,7 @@ a {
 }
 
 #userLogin {
-    margin-left: 400px;
+  margin-left: 400px;
 }
 .button {
   width: 400px;
@@ -99,7 +99,7 @@ a {
   background-color: rgb(48, 137, 179);
 }
 .header {
-  text-align:end;
+  text-align: end;
   width: 54%;
 }
 
@@ -123,9 +123,15 @@ a {
 }
 
 .header-info {
-    padding-left: 50px;
-    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-    font-size: 20px;
+  padding-right: 40px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 20px;
+  color: rgb(38, 38, 53);
+  height: 40px;
+}
+
+span.header-info:hover {
+  cursor: pointer;
 }
 
 .list-button {
