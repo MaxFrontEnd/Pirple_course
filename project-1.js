@@ -4,7 +4,6 @@ let loginForm = document.createElement("form");
 let createListForm = document.createElement("form");
 let createTaskForm = document.createElement("form");
 let dashboard = document.createElement("div");
-let signUpButton = document.getElementById("signUpButton");
 
 const ulOfTodos = document.createElement("ul");
 const taskDiv = document.createElement("div");
@@ -28,6 +27,7 @@ returnOnToDo.setAttribute("id", "returnOnToDo");
 returnOnToDo.setAttribute("class", "button");
 returnOnToDo.innerHTML = "Return to list";
 saveButton.setAttribute("class", "button");
+saveButton.setAttribute("id", "saveButton");
 saveButton.innerHTML = "Save";
 //helloUser.setAttribute("class", "hello");
 
@@ -55,6 +55,7 @@ function displayStartPage() {
 </div>';
   const content = document.getElementById("content");
   let loginButton = document.getElementById("LogInButton");
+  let signUpButton = document.getElementById("signUpButton");
   loginButton.addEventListener("click", e => {
     content.classList.add("content-submit");
     //const wrap = document.getElementById("wrap");
@@ -65,7 +66,15 @@ function displayStartPage() {
     //loginButton.removeEventListener("click");
   });
 
-  
+  signUpButton.addEventListener("click", () => {
+    content.classList.add("content-submit");
+    if (removeChilds(content)) {
+      content.appendChild(signUpform);
+      content.classList.add("content-submit");
+      singUpInputListener();
+    }
+  });
+
   let logOff = document.getElementById("logOff");
   logOff.addEventListener("click", e => {
     e.preventDefault();
@@ -259,14 +268,15 @@ function displayListOfTasks(toDoObj, userObj, key) {
     content.appendChild(returnOnToDo);
     content.appendChild(saveButton);
   }
-
-  saveButton.addEventListener("click", e => {
+  const saveButtonPress = document.getElementById("saveButton");
+  console.log(saveButtonPress);
+  saveButtonPress.addEventListener("click", e => {
     e.preventDefault();
     console.log(userObj);
     saveObject(userObj);
   });
-
-  returnOnToDo.addEventListener("click", e => {
+  const returnButtonPress = document.getElementById("returnOnToDo");
+  returnButtonPress.addEventListener("click", e => {
     e.preventDefault();
     displayDashboard(userObj);
   });
@@ -383,61 +393,67 @@ function insertUserDataToLocalStorage(firstName, lastName, email, password) {
 }
 
 // DISPLAY SIGUP FORM
-signUpButton.addEventListener("click", () => {
-  content.classList.add("content-submit");
-  if (removeChilds(content)) {
-    content.appendChild(signUpform);
-    content.classList.add("content-submit");
+
+//CHECK INPUTS VALUES
+function signUp(e) {
+  e.preventDefault();
+  const fnInput = document.getElementById("fname");
+  const lnInput = document.getElementById("lname");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const checkbox = document.getElementById("checkbox");
+  const validationEmpty = document.createElement("p");
+
+  validationEmpty.innerHTML = "All fields are required";
+  validationEmpty.style.cssText = "color: red";
+  if (
+    !fnInput.value ||
+    !lnInput.value ||
+    !emailInput.value ||
+    !passwordInput.value ||
+    !checkbox.checked
+  ) {
+    signUpform.appendChild(validationEmpty);
+    setTimeout(() => {
+      signUpform.removeChild(validationEmpty);
+    }, 3000);
+  } else {
+    // INSERT-DATA TO LOCALSTORAGE AND DISPLAY DASHBOARD
+    let userIsInserted = insertUserDataToLocalStorage(
+      fnInput.value,
+      lnInput.value,
+      emailInput.value,
+      passwordInput.value
+    );
+    // IF DATA IS INSERTED
+    if (userIsInserted) {
+      displayDashboard(userIsInserted);
+      displayData(userIsInserted);
+      // IF DATA NOT INSERTED USER ALREADY EXIXST
+    } else {
+      validationEmpty.innerHTML = "User already exists";
+      signUpform.appendChild(validationEmpty);
+      setTimeout(() => {
+        signUpform.removeChild(validationEmpty);
+      }, 3000);
+    }
   }
+}
+function singUpInputListener() {
   const fnInput = document.getElementById("fname");
   const lnInput = document.getElementById("lname");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
   const checkbox = document.getElementById("checkbox");
   const submitInput = document.getElementById("submit");
-  //const signUpform = document.getElementById("signUpForm");
-  //CHECK INPUTS VALUES
-  submitInput.addEventListener("click", e => {
-    e.preventDefault();
-    const validationEmpty = document.createElement("p");
-    validationEmpty.innerHTML = "All fields are required";
-    validationEmpty.style.cssText = "color: red";
-    if (
-      !fnInput.value ||
-      !lnInput.value ||
-      !emailInput.value ||
-      !passwordInput.value ||
-      !checkbox.checked
-    ) {
-      signUpform.appendChild(validationEmpty);
-      setTimeout(() => {
-        signUpform.removeChild(validationEmpty);
-      }, 3000);
-    } else {
-      // INSERT-DATA TO LOCALSTORAGE AND DISPLAY DASHBOARD
-      let userIsInserted = insertUserDataToLocalStorage(
-        fnInput.value,
-        lnInput.value,
-        emailInput.value,
-        passwordInput.value
-      );
-      // IF DATA IS INSERTED
-      if (userIsInserted) {
-        displayDashboard(userIsInserted);
-        createListButton.addEventListener("click", e => {
-          e.preventDefault();
-        });
-        // IF DATA NOT INSERTED USER ALREADY EXIXST
-      } else {
-        validationEmpty.innerHTML = "User already exists";
-        signUpform.appendChild(validationEmpty);
-        setTimeout(() => {
-          signUpform.removeChild(validationEmpty);
-        }, 3000);
-      }
-    }
-  });
-});
+
+  fnInput.value = "";
+  lnInput.value = "";
+  emailInput.value = "";
+  passwordInput.value = "";
+  checkbox.checked = false;
+  submitInput.addEventListener("click", signUp);
+}
 
 // LOG IN BUTTON
 
@@ -480,9 +496,10 @@ function logIn(e) {
   }
 }
 function loginInputListener() {
-  //const signUpform = document.getElementById("signUpForm");
-  //CHECK INPUTS VALUES
   const loginInput = document.getElementById("login");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  emailInput.value = "";
+  passwordInput.value = "";
   loginInput.addEventListener("click", logIn);
-  //loginInput.removeEventListener("click", logIn);
 }
