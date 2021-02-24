@@ -4,9 +4,8 @@ let loginForm = document.createElement("form");
 let createListForm = document.createElement("form");
 let createTaskForm = document.createElement("form");
 let dashboard = document.createElement("div");
-let pageContent = document.getElementById("content");
-const signUpButton = document.getElementById("signUpButton");
-const loginButton = document.getElementById("LogInButton");
+let signUpButton = document.getElementById("signUpButton");
+
 const ulOfTodos = document.createElement("ul");
 const taskDiv = document.createElement("div");
 const returnOnToDo = document.createElement("button");
@@ -35,7 +34,10 @@ saveButton.innerHTML = "Save";
 //START PAGE
 
 function displayStartPage() {
-  let startPage =
+  const body = document.getElementById("body");
+  removeChilds(body);
+
+  body.innerHTML =
     '<header>\
     <div id="headContainer" class="head-container">\
         <h1 class="header">TO DO LIST</h1>\
@@ -51,14 +53,27 @@ function displayStartPage() {
     <button id="LogInButton" class="button" name="Login">Log In</button>\
     </div>\
 </div>';
-  body.innerHTML = startPage;
+  const content = document.getElementById("content");
+  let loginButton = document.getElementById("LogInButton");
+  loginButton.addEventListener("click", e => {
+    content.classList.add("content-submit");
+    //const wrap = document.getElementById("wrap");
+    removeChilds(content);
+    content.appendChild(loginForm);
+    content.classList.add("content-submit");
+    loginInputListener();
+    //loginButton.removeEventListener("click");
+  });
 
+  
   let logOff = document.getElementById("logOff");
   logOff.addEventListener("click", e => {
     e.preventDefault();
     logOffUser();
   });
 }
+
+console.log(content);
 // SIGN UP FORM
 signUpform.innerHTML =
   '<label for="fname">First name:</label><br> \
@@ -96,11 +111,11 @@ createTaskForm.innerHTML =
 
 // DASHBOARD
 function displayDashboard(userObj) {
-  dashboard.appendChild(createListButton);
-  if (removeChilds(pageContent)) {
-    pageContent.classList.remove("content-submit");
-    pageContent.appendChild(dashboard);
+  if (removeChilds(content)) {
+    content.classList.remove("content-submit");
+    content.appendChild(dashboard);
   }
+  dashboard.appendChild(createListButton);
   addCreateToDoListForm(userObj);
   displayListOfToDos(userObj);
 }
@@ -135,6 +150,7 @@ function addToDo(userObj, toDoName) {
 // DISPLAY TODOS FUNCTIONALITY
 function displayListOfToDos(userObj) {
   while (ulOfTodos.firstChild) {
+    console.log("removed");
     ulOfTodos.removeChild(ulOfTodos.firstChild);
   }
   //console.log(userObj);
@@ -157,12 +173,12 @@ function displayListOfToDos(userObj) {
     }
   });
 
-  pageContent.appendChild(ulOfTodos);
+  content.appendChild(ulOfTodos);
 }
 
 // DISPLAY ADD TASK FORM
 function displayAddTaskForm(userObj, toDoObj, key) {
-  pageContent.appendChild(createTaskForm);
+  content.appendChild(createTaskForm);
   let addTaskButton = document.getElementById("addTask");
   let taskName = document.getElementById("newTask");
   addTaskButton.addEventListener("click", e => {
@@ -236,12 +252,12 @@ function displayListOfTasks(toDoObj, userObj, key) {
     });
   }
 
-  if (removeChilds(pageContent)) {
-    pageContent.classList.remove("content-submit");
-    pageContent.appendChild(createTaskForm);
-    pageContent.appendChild(taskDiv);
-    pageContent.appendChild(returnOnToDo);
-    pageContent.appendChild(saveButton);
+  if (removeChilds(content)) {
+    content.classList.remove("content-submit");
+    content.appendChild(createTaskForm);
+    content.appendChild(taskDiv);
+    content.appendChild(returnOnToDo);
+    content.appendChild(saveButton);
   }
 
   saveButton.addEventListener("click", e => {
@@ -255,8 +271,8 @@ function displayListOfTasks(toDoObj, userObj, key) {
     displayDashboard(userObj);
   });
 
-  //   pageContent.removeChild(ulOfTodos);
-  //   pageContent.appendChild(ulOfTasks);
+  //   content.removeChild(ulOfTodos);
+  //   content.appendChild(ulOfTasks);
 
   //   while (ulOfTasks.firstChild) {
   //     ulOfTasks.removeChild(ulOfTasks.firstChild);
@@ -368,10 +384,10 @@ function insertUserDataToLocalStorage(firstName, lastName, email, password) {
 
 // DISPLAY SIGUP FORM
 signUpButton.addEventListener("click", () => {
-  pageContent.classList.add("content-submit");
-  if (removeChilds(pageContent)) {
-    pageContent.appendChild(signUpform);
-    pageContent.classList.add("content-submit");
+  content.classList.add("content-submit");
+  if (removeChilds(content)) {
+    content.appendChild(signUpform);
+    content.classList.add("content-submit");
   }
   const fnInput = document.getElementById("fname");
   const lnInput = document.getElementById("lname");
@@ -425,42 +441,6 @@ signUpButton.addEventListener("click", () => {
 
 // LOG IN BUTTON
 
-loginButton.addEventListener("click", () => {
-  pageContent.classList.add("content-submit");
-  if (removeChilds(pageContent)) {
-    pageContent.appendChild(loginForm);
-    pageContent.classList.add("content-submit");
-  }
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const loginInput = document.getElementById("login");
-  //const signUpform = document.getElementById("signUpForm");
-  //CHECK INPUTS VALUES
-  loginInput.addEventListener("click", e => {
-    e.preventDefault();
-    const validationMessage = document.createElement("p");
-    validationMessage.innerHTML = "Login or Password are incorect";
-    validationMessage.style.cssText = "color: red";
-    if (!emailInput.value || !passwordInput.value) {
-      loginForm.appendChild(validationMessage);
-      setTimeout(() => {
-        loginForm.removeChild(validationMessage);
-      }, 3000);
-    } else {
-      let emailExists = CheckIfDataExistsInLS(emailInput.value, "userEmail");
-      if (emailExists && passwordInput.value === emailExists.password) {
-        displayData(emailExists);
-        displayDashboard(emailExists);
-      } else {
-        loginForm.appendChild(validationMessage);
-        setTimeout(() => {
-          loginForm.removeChild(validationMessage);
-        }, 3000);
-      }
-    }
-  });
-});
-
 function displayData(userObj) {
   let loginInfo = document.getElementById("userLogin");
   loginInfo.innerText = userObj.firstName;
@@ -469,5 +449,40 @@ function displayData(userObj) {
 function logOffUser() {
   let loginInfo = document.getElementById("userLogin");
   loginInfo.innerText = "You are not logged in";
+  //const wrap = document.getElementById("wrap");
+  //removeChilds(content);
   displayStartPage();
+}
+
+function logIn(e) {
+  e.preventDefault();
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const validationMessage = document.createElement("p");
+  validationMessage.innerHTML = "Login or Password are incorect";
+  validationMessage.style.cssText = "color: red";
+  if (!emailInput.value || !passwordInput.value) {
+    loginForm.appendChild(validationMessage);
+    setTimeout(() => {
+      loginForm.removeChild(validationMessage);
+    }, 3000);
+  } else {
+    let emailExists = CheckIfDataExistsInLS(emailInput.value, "userEmail");
+    if (emailExists && passwordInput.value === emailExists.password) {
+      displayData(emailExists);
+      displayDashboard(emailExists);
+    } else {
+      loginForm.appendChild(validationMessage);
+      setTimeout(() => {
+        loginForm.removeChild(validationMessage);
+      }, 3000);
+    }
+  }
+}
+function loginInputListener() {
+  //const signUpform = document.getElementById("signUpForm");
+  //CHECK INPUTS VALUES
+  const loginInput = document.getElementById("login");
+  loginInput.addEventListener("click", logIn);
+  //loginInput.removeEventListener("click", logIn);
 }
