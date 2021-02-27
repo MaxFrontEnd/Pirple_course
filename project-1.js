@@ -35,11 +35,19 @@ saveButton.innerHTML = "Save";
 //START PAGE
 
 function displayStartPage() {
+  const head = document.createElement("head");
+  head.innerHTML = `
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <link rel="stylesheet" href="project-1.css" />
+  `;
+  const html = document.getElementById("html");
+
   const body = document.getElementById("body");
+  html.insertBefore(head, body);
   removeChilds(body);
 
-  body.innerHTML =
-    '<header>\
+  body.innerHTML = `<header>\
     <div id="headContainer" class="head-container">\
         <h1 class="header">TO DO LIST</h1>\
         <span id="userLogin" class="header-info">You are not logged in</span>\
@@ -53,7 +61,7 @@ function displayStartPage() {
     <button id="signUpButton" class="button" name="singUp">Sign Up</button>\
     <button id="LogInButton" class="button" name="Login">Log In</button>\
     </div>\
-</div>';
+</div>`;
   const content = document.getElementById("content");
   let loginButton = document.getElementById("LogInButton");
   let signUpButton = document.getElementById("signUpButton");
@@ -86,8 +94,7 @@ function displayStartPage() {
 console.log(content);
 
 //EDIT FORM
-editForm.innerHTML =
-  '<label for="fname">First name:</label><br> \
+editForm.innerHTML = `<label for="fname">First name:</label><br> \
 <input type="text" id="fname" class="form-field" maxlength="30" name="fname" value=""><br> \
 <label for="lname">Last name:</label><br> \
 <input type="text" id="lname" class="form-field" name="lname" value=""><br> \
@@ -96,10 +103,9 @@ editForm.innerHTML =
 <label for="password">Password:</label><br> \
 <input type="password" id="password" class="form-field" name="password" value=""><br><br>  \
 <input type="submit" id="edit" class="button" value="Edit"> <br> \
-<input type="submit" id="cancelEdit" class="button" value="Cancel">';
+<input type="submit" id="cancelEdit" class="button" value="Cancel">`;
 // SIGN UP FORM
-signUpform.innerHTML =
-  '<label for="fname">First name:</label><br> \
+signUpform.innerHTML = `<label for="fname">First name:</label><br> \
   <input type="text" id="fname" class="form-field" maxlength="30" name="fname" value=""><br> \
   <label for="lname">Last name:</label><br> \
   <input type="text" id="lname" class="form-field" name="lname" value=""><br> \
@@ -108,29 +114,26 @@ signUpform.innerHTML =
   <label for="password">Password:</label><br> \
   <input type="password" id="password" class="form-field" name="password" value=""><br><br>  \
   <input type="checkbox" id="checkbox" name="checkbox">I agree to the Terms of Use" <br><br> \
-  <input type="submit" id="submit" class="button" value="Submit">';
+  <input type="submit" id="submit" class="button" value="Submit">`;
 
 //LOGIN FORM
-loginForm.innerHTML =
-  '<label for="email">Email:</label><br> \
+loginForm.innerHTML = `<label for="email">Email:</label><br> \
   <input type="email" id="email" class="form-field" name="email" value=""><br> \
   <label for="password">Password:</label><br> \
   <input type="password" id="password" class="form-field" name="password" value=""><br><br>  \
-  <input type="submit" id="login" class="button" value="Log In">';
+  <input type="submit" id="login" class="button" value="Log In">`;
 
 // CREATE NEW LIST
-createListForm.innerHTML =
-  '<label for="ListName">List Name:</label><br> \
+createListForm.innerHTML = `<label for="ListName">List Name:</label><br> \
   <input type="text" id="newList" class="form-field"  maxlength="30" name="ListName" value=""><br> \
   <input type="submit" id="apply" class="list-button" value="Create"> \
-  <input type="submit" id="cancel" class="list-button" value="Cancel">';
+  <input type="submit" id="cancel" class="list-button" value="Cancel">`;
 
 //CREATE TASK FORM
 
-createTaskForm.innerHTML =
-  '<label for="TaskName">Task name:</label><br> \
+createTaskForm.innerHTML = `<label for="TaskName">Task name:</label><br> \
     <input type="text" id="newTask" class="form-field" maxlength="30" name="TaskName" value=""><br> \
-    <input type="submit" id="addTask" class="list-button" value="Add"> ';
+    <input type="submit" id="addTask" class="list-button" value="Add"> `;
 
 // DASHBOARD
 function displayDashboard(userObj) {
@@ -180,7 +183,7 @@ function displayListOfToDos(userObj) {
   for (let key in userObj.toDo) {
     let li = document.createElement("li");
     li.setAttribute("class", "toDoLi");
-    li.innerHTML = "<a href='' id=" + key + ">" + key + "</a>";
+    li.innerHTML = `<a href='' id='key'> ${key}</a>`;
     ulOfTodos.appendChild(li);
   }
 
@@ -294,19 +297,6 @@ function displayListOfTasks(toDoObj, userObj, key) {
     e.preventDefault();
     displayDashboard(userObj);
   });
-
-  //   content.removeChild(ulOfTodos);
-  //   content.appendChild(ulOfTasks);
-
-  //   while (ulOfTasks.firstChild) {
-  //     ulOfTasks.removeChild(ulOfTasks.firstChild);
-  //   }
-
-  //   for (let key in userObj.toDo) {
-  //     let li = document.createElement("li");
-  //     li.innerHTML = "<a href='' id=" + key + ">" + key + "</a>";
-  //     ulOfTodos.appendChild(li);
-  //   }
 }
 
 // SAVE OBJECT
@@ -332,7 +322,7 @@ function addTask(userObj, toDoObj, taskName, key) {
   for (let task in toDoObj) {
     console.log(task);
     if (task === taskName) {
-      console.log("task " + task + " already exist. Yot enter " + taskName);
+      console.log(`${task} already exist. Yot enter ${taskName}`);
       return false;
     }
   }
