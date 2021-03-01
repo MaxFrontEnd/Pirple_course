@@ -1,0 +1,144 @@
+body {
+  background-color: #ecf1f5;
+}
+
+label {
+  font-size: 25px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  color: rgb(2, 20, 54);
+}
+
+ul#ulToDo {
+  padding: 1px;
+}
+
+span.taskLi {
+  font-size: 25px;
+}
+
+#headContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.done {
+  background-color: indianred;
+  border: solid 1px black;
+}
+.cheked {
+  height: 28px;
+  padding: 10px;
+  margin: -10px;
+  width: 30px;
+  border: solid 1px black;
+  border-radius: 4px;
+  text-align: center;
+}
+li.toDoLi {
+  list-style-type: none;
+  font-size: 25px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  padding: 10px;
+  background-color: rgb(125, 214, 199);
+  margin: 1px;
+  width: 600px;
+  height: 30px;
+}
+div.liDiv {
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+  font-size: 25px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  padding: 10px;
+  background-color: rgb(125, 214, 199);
+  margin: 1px;
+  width: 600px;
+  height: 30px;
+  border-radius: 4px;
+}
+a {
+  text-decoration: none;
+}
+
+/* #content {
+
+} */
+
+#content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#wrap {
+  display: flex;
+  justify-content: center;
+}
+
+#userLogin {
+  margin-left: 400px;
+}
+.button {
+  width: 400px;
+  height: 30px;
+  background-color: rgb(97, 192, 236);
+  border: solid gray 0.2px;
+  border-radius: 4px;
+  margin: 3px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 15px;
+}
+
+.hello {
+  text-align: center;
+  left: 800px;
+}
+.button:hover {
+  background-color: rgb(48, 137, 179);
+}
+.header {
+  text-align: end;
+  width: 54%;
+}
+
+.discription {
+  text-align: center;
+}
+
+.simbol {
+  color: rgb(53, 204, 60);
+}
+.form-field {
+  width: 400px;
+  height: 30px;
+  font-size: 20px;
+}
+
+.content-submit {
+  padding: 30px 150px 30px 150px;
+  background-color: rgb(97, 192, 236);
+  width: 205px;
+}
+
+.header-info {
+  padding-right: 40px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 20px;
+  color: rgb(38, 38, 53);
+  height: 40px;
+}
+
+span.header-info:hover {
+  cursor: pointer;
+}
+
+.list-button {
+  width: 200px;
+  height: 25;
+  margin: 1px;
+  background-color: rgb(97, 192, 236);
+  border: solid gray 0.2px;
+  border-radius: 4px;
+}
