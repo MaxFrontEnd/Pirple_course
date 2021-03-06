@@ -1,0 +1,10 @@
+.window {
+  display: block;
+  width: 1000px;
+  height: 800px;
+  border: 2px solid green;
+  font-size: 100px;
+  color: rgb(23, 156, 128); 
+  text-align: center;
+  box-shadow: 0 3px 30px rgb(23, 156, 128);
+}
