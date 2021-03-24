@@ -80,17 +80,20 @@ class Elevator {
   }
 
   moveUp(destination, type) {
-    this.state = "movingUp";
     console.log(
-      `moving from position ${this.position} to destination ${destination}`
+      `moving ${this.elevator} from position ${
+        this.position
+      } to destination ${destination}`
     );
     if (destination < this.position) {
-      this.direction = "down";
+      this.state = "movingDown";
       this.position -= 1;
     } else if (destination > this.position) {
       this.position += 1;
-      direction = "up";
-    } else if (this.position === destination) {
+      this.state = "movingUp";
+    }
+
+    if (this.position === destination) {
       this.direction = "staing";
       switch (type) {
         case "call":
@@ -98,9 +101,14 @@ class Elevator {
             `Elevator arived to floor ${destination}. Choose where to go`
           );
           this.callUpDestinations.shift();
+          if (this.callUpDestination.length === 0) {
+            this.direction = "staing";
+          }
           break;
         case "dest":
-          console.log(`you arive to floor ${destination}`);
+          console.log(
+            `Door are opening. You arive to floor ${destination} please extit from elevator`
+          );
           this.moveUpDestinations.shift();
           break;
         case "destCall":
@@ -114,30 +122,30 @@ class Elevator {
     }
   }
 
-  moveDown(destination, type) {
-    this.position -= 1;
-    if (this.position === destination) {
-      switch (type) {
-        case "call":
-          console.log(
-            `Elevator arived to floor ${destination}. Choose where to go`
-          );
-          this.callDownDestinations.shift();
-          break;
-        case "dest":
-          console.log(`you arive to floor ${destination}`);
-          this.moveDownDestinations.shift();
-          break;
-        case "destCall":
-          console.log(
-            `you arive to floor ${destination}. Please get out another passanger is enter`
-          );
-          this.callDownDestinations.shift();
-          this.moveDownDestinations.shift();
-          break;
-      }
-    }
-  }
+  // moveDown(destination, type) {
+  //   this.position -= 1;
+  //   if (this.position === destination) {
+  //     switch (type) {
+  //       case "call":
+  //         console.log(
+  //           `Elevator arived to floor ${destination}. Choose where to go`
+  //         );
+  //         this.callDownDestinations.shift();
+  //         break;
+  //       case "dest":
+  //         console.log(`you arive to floor ${destination}`);
+  //         this.moveDownDestinations.shift();
+  //         break;
+  //       case "destCall":
+  //         console.log(
+  //           `you arive to floor ${destination}. Please get out another passanger is enter`
+  //         );
+  //         this.callDownDestinations.shift();
+  //         this.moveDownDestinations.shift();
+  //         break;
+  //     }
+  //   }
+  // }
   callDown() {}
 
   checkIfWorkArraysAreEmpty() {
@@ -154,7 +162,7 @@ class Elevator {
       mvUp.length > 0 ||
       clUp.length > 0
     ) {
-      console.log("arrays not empty. Returning true");
+      //console.log("arrays not empty. Returning true");
       return true;
     } else {
       return false;
@@ -169,7 +177,7 @@ class Elevator {
     let dest;
     let call;
     if (this.checkIfWorkArraysAreEmpty() === false) {
-      console.log("waiting for work");
+      console.log(` ${this.elevator} waiting for work`);
       return false;
     }
     if (mvUp) {
@@ -183,19 +191,19 @@ class Elevator {
       call = undefined;
     }
     if (dest === undefined) {
-      console.log("calling this function");
+      //console.log("calling this function");
       this.moveUp(call, "call");
     } else if (call === undefined) {
-      console.log("calling this function");
+      // console.log("calling this function");
       this.moveUp(dest, "dest");
     } else if (dest > call) {
-      console.log("calling this function");
+      // console.log("calling this function");
       this.moveUp(call, "call");
     } else if (dest < call) {
-      console.log("calling this function");
+      // console.log("calling this function");
       this.moveUp(dest, "dest");
     } else if (dest === call) {
-      console.log("calling this function");
+      // console.log("calling this function");
       this.moveUp(dest, "destCall");
     }
   }
@@ -206,7 +214,7 @@ class Elevator {
     console.log(`${this.elevator} starts to work`);
     this.listenForWork = setInterval(function() {
       self.chekWork();
-    }, 4000);
+    }, 1000);
   }
 
   powerOf() {
@@ -295,10 +303,12 @@ function selectCallElevator(direction, floor, elevatorA, elevatorB) {
 }
 // moving selected elevator
 function moveElevator(elevator, destination) {
+  console.log(elevator.state);
   console.log(elevator.position);
-  if (Elevator.position < destination) {
+  console.log(destination);
+  if (elevator.position < destination) {
     elevator.moveUpDestination(destination);
-  } else if (Elevator.position > destination) {
+  } else if (elevator.position > destination) {
     elevator.moveDownDestination(destination);
   } else {
     console.log("we are alreade here");
@@ -306,8 +316,8 @@ function moveElevator(elevator, destination) {
 }
 
 selectCallElevator("up", -1, elevatorA, elevatorB);
-//moveElevator(elevatorB, 0);
-
+setTimeout(moveElevator, 2000, elevatorB, 0);
+setTimeout(moveElevator, 2000, elevatorB, 1);
 //selectCallElevator("up", 0, elevatorA, elevatorB);
 //selectMoveElevator("up", 0, elevatorA, elevatorB);
 // elevatorA.addFloorDestination(3);
