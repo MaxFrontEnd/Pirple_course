@@ -62,58 +62,60 @@ class Elevator {
     }
   }
 
-  moveUpDestination(destination) {
+  moveUpDestination(moveUpDestination) {
     if (!this.moveUpDestinations) {
       this.moveUpDestinations = [];
     }
 
-    this.moveUpDestinations.push(destination);
+    this.moveUpDestinations.push(moveUpDestination);
     this.moveUpDestinations.sort();
   }
 
-  moveDownDestination(destination) {
+  moveDownDestination(moveUpDestination) {
     if (!this.moveDownDestinations) {
       this.moveDownDestinations = [];
     }
-    this.moveUpDestinations.push(destination);
+    this.moveUpDestinations.push(moveUpDestination);
     this.moveUpDestinations.sort();
   }
 
-  moveUp(destination, type) {
+  moveUp(moveUpDestination, type) {
     console.log(
       `moving ${this.elevator} from position ${
         this.position
-      } to destination ${destination}`
+      } to ${moveUpDestination}`
     );
-    if (destination < this.position) {
+    if (moveUpDestination < this.position) {
       this.state = "movingDown";
       this.position -= 1;
-    } else if (destination > this.position) {
+    } else if (moveUpDestination > this.position) {
       this.position += 1;
       this.state = "movingUp";
     }
 
-    if (this.position === destination) {
-      this.direction = "staing";
+    if (this.position === moveUpDestination) {
       switch (type) {
-        case "call":
+        case "callUpDestination":
           console.log(
-            `Elevator arived to floor ${destination}. Choose where to go`
+            `Elevator arived to floor ${moveUpDestination}. Choose where to go`
           );
           this.callUpDestinations.shift();
-          if (this.callUpDestination.length === 0) {
+          if (
+            this.callUpDestinations.length === 0 ||
+            this.moveUpDestinations.length === 0
+          ) {
             this.direction = "staing";
           }
           break;
-        case "dest":
+        case "moveUpDestination":
           console.log(
-            `Door are opening. You arive to floor ${destination} please extit from elevator`
+            `Door are opening. You arive to floor ${moveUpDestination} please extit from elevator`
           );
           this.moveUpDestinations.shift();
           break;
-        case "destCall":
+        case "moveUpDestinationCall":
           console.log(
-            `you arive to floor ${destination}. Please get out another passanger is enter`
+            `you arive to floor ${moveUpDestination}. Please get out another passanger is enter`
           );
           this.callUpDestinations.shift();
           this.moveUpDestinations.shift();
@@ -122,30 +124,62 @@ class Elevator {
     }
   }
 
-  // moveDown(destination, type) {
-  //   this.position -= 1;
-  //   if (this.position === destination) {
-  //     switch (type) {
-  //       case "call":
-  //         console.log(
-  //           `Elevator arived to floor ${destination}. Choose where to go`
-  //         );
-  //         this.callDownDestinations.shift();
-  //         break;
-  //       case "dest":
-  //         console.log(`you arive to floor ${destination}`);
-  //         this.moveDownDestinations.shift();
-  //         break;
-  //       case "destCall":
-  //         console.log(
-  //           `you arive to floor ${destination}. Please get out another passanger is enter`
-  //         );
-  //         this.callDownDestinations.shift();
-  //         this.moveDownDestinations.shift();
-  //         break;
-  //     }
-  //   }
-  // }
+  moveDown(moveDownDestination, type) {
+    console.log(
+      `moving ${this.elevator} from position ${
+        this.position
+      } to ${moveDownDestination}`
+    );
+    if (moveDownDestination < this.position) {
+      this.state = "movingDown";
+      this.position -= 1;
+    } else if (moveDownDestination > this.position) {
+      this.position += 1;
+      this.state = "movingUp";
+    }
+
+    if (this.position === moveDownDestination) {
+      switch (type) {
+        case "callDownDestination":
+          console.log(
+            `Elevator arived to floor ${moveDownDestination}. Choose where to go`
+          );
+          this.callDownDestinations.shift();
+          if (
+            this.callDownDestinations.length === 0 ||
+            this.moveDownDestinations.length === 0
+          ) {
+            this.state = "staing";
+          }
+          break;
+        case "moveUpDestination":
+          console.log(
+            `Door are opening. You arive to floor ${moveDownDestination} please extit from elevator`
+          );
+          this.moveDownDestinations.shift();
+          if (
+            this.callDownDestinations.length === 0 ||
+            this.moveDownDestinations.length === 0
+          ) {
+            this.state = "staing";
+          }
+          break;
+        case "moveDownDestinationCall":
+          console.log(
+            `you arive to floor ${moveDownDestination}. Please get out another passanger is enter`
+          );
+          this.callDownDestinations.shift();
+          this.moveDonwDestinations.shift();
+          if (
+            moveDonwDestinations.length === 0 ||
+            this.callUpDestinations.length === 0
+          ) {
+            this.state = "staing";
+          }
+          break;
+      }
+    }
+  }
   callDown() {}
 
   checkIfWorkArraysAreEmpty() {
@@ -174,37 +208,64 @@ class Elevator {
     let mvDn = this.moveDownDestinations;
     let clUp = this.callUpDestinations;
     let clDn = this.callDownDestinations;
-    let dest;
-    let call;
+    let moveUpDestination;
+    let callUpDestination;
+    let moveDownDestination;
+    let callDownDestination;
     if (this.checkIfWorkArraysAreEmpty() === false) {
       console.log(` ${this.elevator} waiting for work`);
       return false;
     }
-    if (mvUp) {
-      dest = mvUp[0];
-    } else {
-      dest = undefined;
+    if (mvUp !== undefined) {
+      moveUpDestination = mvUp[0];
     }
-    if (clUp) {
-      call = clUp[0];
-    } else {
-      call = undefined;
+    if (clUp !== undefined) {
+      callUpDestination = clUp[0];
     }
-    if (dest === undefined) {
-      //console.log("calling this function");
-      this.moveUp(call, "call");
-    } else if (call === undefined) {
-      // console.log("calling this function");
-      this.moveUp(dest, "dest");
-    } else if (dest > call) {
-      // console.log("calling this function");
-      this.moveUp(call, "call");
-    } else if (dest < call) {
-      // console.log("calling this function");
-      this.moveUp(dest, "dest");
-    } else if (dest === call) {
-      // console.log("calling this function");
-      this.moveUp(dest, "destCall");
+
+    if (mvDn !== undefined) {
+      moveDownDestination = mvDn[0];
+    }
+
+    if (clDn !== undefined) {
+      callDownDestination = clDn[0];
+    }
+
+    console.log(this.state);
+    if (this.state === "movingUp") {
+      if (moveUpDestination === undefined) {
+        //console.log("calling this function");
+        this.moveUp(callUpDestination, "callUpDestination");
+      } else if (callUpDestination === undefined) {
+        // console.log("calling this function");
+        this.moveUp(moveUpDestination, "moveUpDestination");
+      } else if (moveUpDestination > callUpDestination) {
+        // console.log("calling this function");
+        this.moveUp(callUpDestination, "callUpDestination");
+      } else if (moveUpDestination < callUpDestination) {
+        // console.log("calling this function");
+        this.moveUp(moveUpDestination, "moveUpDestination");
+      } else if (moveUpDestination === callUpDestination) {
+        // console.log("calling this function");
+        this.moveUp(moveUpDestination, "moveUpDestinationCall");
+      }
+    } else if (this.state === "movingDown") {
+      if (moveDownDestination === undefined) {
+        //console.log("calling this function");
+        this.moveDown(callDownDestination, "callDownDestination");
+      } else if (callDownDestination === undefined) {
+        // console.log("calling this function");
+        this.moveDown(moveDownDestination, "moveDownDestination");
+      } else if (moveDownDestination > callUpDestination) {
+        // console.log("calling this function");
+        this.moveDown(callDownDestination, "callDownDestination");
+      } else if (moveDownDestination < callDawnDestination) {
+        // console.log("calling this function");
+        this.moveDown(moveDownDestination, "moveDownDestination");
+      } else if (moveDawnDestination === callDawnDestination) {
+        // console.log("calling this function");
+        this.moveDown(moveDawnDestination, "moveDawnDestinationCall");
+      }
     }
   }
 
@@ -221,13 +282,13 @@ class Elevator {
     clearInterval(listenForWork);
   }
 
-  // removeFloorDestination(destination) {
-  //   console.log(destination);
-  //   this.destinations.pop(destination);
-  //   this.destinations.sort();
-  //   this.position = destination;
-  //   if (this.destinations.length > 0) {
-  //     moveUp(this.destinations[0]);
+  // removeFloorDestination(moveUpDestination) {
+  //   console.log(moveUpDestination);
+  //   this.moveUpDestinationinations.pop(moveUpDestination);
+  //   this.moveUpDestinationinations.sort();
+  //   this.position = moveUpDestination;
+  //   if (this.moveUpDestinationinations.length > 0) {
+  //     moveUp(this.moveUpDestinationinations[0]);
   //     this.state = "moving up";
   //   } else {
   //     this.state = "staing";
@@ -261,14 +322,16 @@ function selectCallElevator(direction, floor, elevatorA, elevatorB) {
     currentAstate === "EmergencyStoped" &&
     currentBstate === "EmergencyStoped"
   ) {
-    alert("No elevators a availeble now. Please call elevatorsEngeneers");
+    alert(
+      "No elevators a availeble now. Please callUpDestination elevatorsEngeneers"
+    );
     return false;
   }
   if (floor > 10 || floor < -1) {
     alert("This floor does not exist");
     return false;
   }
-  //call from basement
+  //callUpDestination from basement
   switch (direction) {
     case "up":
       if (currentAstate === "movingUp" && currentBstate === "movingUp") {
@@ -302,22 +365,27 @@ function selectCallElevator(direction, floor, elevatorA, elevatorB) {
   }
 }
 // moving selected elevator
-function moveElevator(elevator, destination) {
-  console.log(elevator.state);
-  console.log(elevator.position);
-  console.log(destination);
-  if (elevator.position < destination) {
-    elevator.moveUpDestination(destination);
-  } else if (elevator.position > destination) {
-    elevator.moveDownDestination(destination);
-  } else {
-    console.log("we are alreade here");
+function moveElevator(elevator, moveUpDestination) {
+  console.log(elevator.moveUpDestinations);
+  if (elevator.position < moveUpDestination) {
+    elevator.moveUpDestination(moveUpDestination);
+  } else if (elevator.position > moveUpDestination) {
+    elevator.moveDownDestination(moveUpDestination);
+  } else if (
+    elevator.state === "staing" &&
+    elevator.position === moveUpDestination
+  ) {
+    console.log(`You are allreade at  ${elevator.position}`);
   }
 }
 
 selectCallElevator("up", -1, elevatorA, elevatorB);
-setTimeout(moveElevator, 2000, elevatorB, 0);
+selectCallElevator("up", 4, elevatorA, elevatorB);
+setTimeout(moveElevator, 1000, elevatorB, 0);
 setTimeout(moveElevator, 2000, elevatorB, 1);
+setTimeout(moveElevator, 3000, elevatorB, 3);
+setTimeout(moveElevator, 3000, elevatorB, 4);
+setTimeout(moveElevator, 5000, elevatorB, 0);
 //selectCallElevator("up", 0, elevatorA, elevatorB);
 //selectMoveElevator("up", 0, elevatorA, elevatorB);
 // elevatorA.addFloorDestination(3);
