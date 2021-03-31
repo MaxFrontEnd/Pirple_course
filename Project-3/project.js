@@ -281,6 +281,7 @@ class Elevator {
   powerOf() {
     clearInterval(listenForWork);
   }
+<<<<<<< Porject-3new
 
   // removeFloorDestination(moveUpDestination) {
   //   console.log(moveUpDestination);
@@ -302,6 +303,8 @@ class Building {
     this.basement = basement;
     this.penthouse = penthouse;
   }
+=======
+>>>>>>> srewr
 }
 
 const elevatorA = new Elevator([], [], [], [], floorsForA, false, "staing", 0);
@@ -365,6 +368,7 @@ function selectCallElevator(direction, floor, elevatorA, elevatorB) {
   }
 }
 // moving selected elevator
+<<<<<<< Porject-3new
 function moveElevator(elevator, moveUpDestination) {
   console.log(elevator.moveUpDestinations);
   if (elevator.position < moveUpDestination) {
@@ -376,6 +380,15 @@ function moveElevator(elevator, moveUpDestination) {
     elevator.position === moveUpDestination
   ) {
     console.log(`You are allreade at  ${elevator.position}`);
+=======
+function moveElevator(elevator, destination) {
+  if (elevator.position < destination) {
+    elevator.moveUpDestination(destination);
+  } else if (elevator.position > destination) {
+    elevator.moveDownDestination(destination);
+  } else {
+    console.log("we are alreade here");
+>>>>>>> srewr
   }
 }
 
@@ -383,6 +396,7 @@ selectCallElevator("up", -1, elevatorA, elevatorB);
 selectCallElevator("up", 4, elevatorA, elevatorB);
 setTimeout(moveElevator, 1000, elevatorB, 0);
 setTimeout(moveElevator, 2000, elevatorB, 1);
+<<<<<<< Porject-3new
 setTimeout(moveElevator, 3000, elevatorB, 3);
 setTimeout(moveElevator, 3000, elevatorB, 4);
 setTimeout(moveElevator, 5000, elevatorB, 0);
@@ -391,3 +405,8 @@ setTimeout(moveElevator, 5000, elevatorB, 0);
 // elevatorA.addFloorDestination(3);
 // elevatorA.addFloorDestination(5);
 // elevatorA.addFloorDestination(4);
+=======
+setTimeout(moveElevator, 4000, elevatorB, 5);
+setTimeout(moveElevator, 5000, elevatorB, 6);
+setTimeout(moveElevator, 7000, elevatorB, 8);
+>>>>>>> srewr
